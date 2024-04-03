@@ -34,5 +34,5 @@ void AMainPlayerController::OnUnPossess()
 void AMainPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+	
 }
-

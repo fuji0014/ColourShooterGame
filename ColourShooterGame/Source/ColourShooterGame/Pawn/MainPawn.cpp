@@ -14,7 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/EngineBaseTypes.h"
 #include "Components/SphereComponent.h"
-
+#include "Components/WidgetComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "Components/ArrowComponent.h"
 
@@ -49,11 +49,22 @@ AMainPawn::AMainPawn()
 	VisualMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	VisualMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
 
-	WeaponMount = CreateDefaultSubobject<UArrowComponent>("Weapon Mount");
-	WeaponMount->SetupAttachment(GetRootComponent());
+	WeaponMountRight = CreateDefaultSubobject<UArrowComponent>("RightWeaponMount");
+	WeaponMountLeft = CreateDefaultSubobject<UArrowComponent>("LeftWeaponMount");
+
+	WeaponMountRight->SetupAttachment(GetRootComponent());
+	WeaponMountLeft->SetupAttachment(GetRootComponent());
 
 	bUseControllerRotationYaw = true;
-	bUseControllerRotationPitch = true;
+	bUseControllerRotationPitch = false;
+
+	//MainCamera->bUsePawnControlRotation = true;
+
+	BoxComponent->GetBodyInstance()->bLockZTranslation = true;
+
+	HealthBarComponent = CreateDefaultSubobject<UWidgetComponent>("Health Bar");
+	HealthBarComponent->SetupAttachment(RootComponent);
+
 }
 
 void AMainPawn::MoveForward(float Amount)
@@ -75,6 +86,11 @@ void AMainPawn::Turn(float Amount)
 void AMainPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AMainPawn::OnCollisionBoxBeginOverlap);
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AMainPawn::OnCollisionBoxEndOverlap);
+
+	BoxComponent->OnComponentHit.AddDynamic(this, &AMainPawn::OnCollisionBoxHit);
+
 	SetReplicates(true);
 	SetReplicateMovement(true);
 }
@@ -94,13 +110,15 @@ void AMainPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMainPawn::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMainPawn::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &AMainPawn::Turn);
-	PlayerInputComponent->BindAxis("LookUp", this, &AMainPawn::AddControllerPitchInput);
+	//PlayerInputComponent->BindAxis("LookUp", this, &AMainPawn::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("Pickup", IE_Pressed, this, &AMainPawn::Interact);
 	PlayerInputComponent->BindAction("Drop", IE_Pressed, this, &AMainPawn::DropWeapon);
 
-	InputComponent->BindAction("Fire", IE_Pressed, this, &AMainPawn::FirePressed);
-	InputComponent->BindAction("Fire", IE_Released, this, &AMainPawn::FireReleased);
+	InputComponent->BindAction("FireRight", IE_Pressed, this, &AMainPawn::FireRightPressed);
+	InputComponent->BindAction("FireRight", IE_Released, this, &AMainPawn::FireRightReleased);
+	InputComponent->BindAction("FireLeft", IE_Pressed, this, &AMainPawn::FireLeftPressed);
+	InputComponent->BindAction("FireLeft", IE_Released, this, &AMainPawn::FireLeftReleased);
 
 	InputComponent->BindAction("DecreaseHealth", IE_Released, this, &AMainPawn::DecreaseHealth);
 }
@@ -146,18 +164,26 @@ void AMainPawn::Interact()
 
 void AMainPawn::HoldWeapon(AWeaponBase* Weapon)
 {
-	DropWeapon();
+	//DropWeapon();
+	if (Weapon->weaponPosition == EWeaponType::RightWeapon) {
+		CurrentRightWeapon = Weapon;
+		CurrentRightWeapon->Attach(this);
 
-	CurrentWeapon = Weapon;
-	CurrentWeapon->Attach(this);
+		CurrentRightWeapon->OnWeaponFired.Clear();
+		CurrentRightWeapon->OnWeaponFired.AddDynamic(this, &AMainPawn::OnWeaponFired);
+	}
+	else {
+		CurrentLeftWeapon = Weapon;
+		CurrentLeftWeapon->Attach(this);
 
-	CurrentWeapon->OnWeaponFired.Clear();
-	CurrentWeapon->OnWeaponFired.AddDynamic(this, &AMainPawn::OnWeaponFired);
+		CurrentLeftWeapon->OnWeaponFired.Clear();
+		CurrentLeftWeapon->OnWeaponFired.AddDynamic(this, &AMainPawn::OnWeaponFired);
+	}
 }
 
 void AMainPawn::DropWeapon()
 {
-	if (CurrentWeapon != nullptr)
+	/*if (CurrentWeapon != nullptr)
 	{
 		CurrentWeapon->OnWeaponFired.RemoveDynamic(this, &AMainPawn::OnWeaponFired);
 
@@ -165,37 +191,63 @@ void AMainPawn::DropWeapon()
 		CurrentWeapon = nullptr;
 
 		bIsFiring = false;
-	}
+	}*/
 }
 
-//WEEK8
-void AMainPawn::FirePressed()
+void AMainPawn::FireRightPressed()
 {
-	Fire(true);
+	FireRight(true);
 }
 
-//WEEK8
-void AMainPawn::FireReleased()
+void AMainPawn::FireRightReleased()
 {
-	Fire(false);
+	FireRight(false);
 }
 
-//WEEK8
-void AMainPawn::Fire(bool Toggle)
+void AMainPawn::FireLeftPressed()
 {
-	if (CurrentWeapon)
+	FireLeft(true);
+}
+
+void AMainPawn::FireLeftReleased()
+{
+	FireLeft(false);
+}
+
+void AMainPawn::FireRight(bool Toggle)
+{
+	if (CurrentRightWeapon)
 	{
 		if (Toggle)
 		{
-			CurrentWeapon->PullTrigger();
+			CurrentRightWeapon->PullTrigger();
 		}
 		else
 		{
-			CurrentWeapon->ReleaseTrigger();
+			CurrentRightWeapon->ReleaseTrigger();
 		}
 
 		bIsFiring = Toggle;
 	}
+}
+
+void AMainPawn::FireLeft(bool Toggle)
+{
+	if (CurrentLeftWeapon)
+	{
+		if (Toggle)
+		{
+			CurrentLeftWeapon->PullTrigger();
+		}
+		else
+		{
+			CurrentLeftWeapon->ReleaseTrigger();
+		}
+
+		bIsFiring = Toggle;
+	}
+
+
 }
 
 void AMainPawn::DecreaseHealth()
@@ -214,5 +266,27 @@ void AMainPawn::PrintMessageOnScreen(FString Message)
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(2, 10.f, FColor::Red, Message);
+	}
+}
+
+void AMainPawn::OnCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+
+}
+
+void AMainPawn::OnCollisionBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+
+}
+
+void AMainPawn::OnCollisionBoxHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor)
+	{
+		FString Message = FString("OnCollisionBoxHit: ") + OtherActor->GetName();
+		PrintMessageOnScreen(Message);
 	}
 }

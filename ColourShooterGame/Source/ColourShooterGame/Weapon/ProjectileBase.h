@@ -36,5 +36,6 @@ private:
 
 private:
 	FTimerHandle Timer;
+	void PrintMessageOnScreen(FString Message);
 
 };

@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "ItemBase.generated.h"
 
+
+
 UCLASS()
 class COLOURSHOOTERGAME_API AItemBase : public AActor
 {
@@ -14,6 +16,7 @@ class COLOURSHOOTERGAME_API AItemBase : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AItemBase();
+
 
 protected:
 	// Called when the game starts or when spawned

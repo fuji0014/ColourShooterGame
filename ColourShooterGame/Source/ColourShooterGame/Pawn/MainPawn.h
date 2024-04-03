@@ -29,14 +29,23 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera")
 	class USpringArmComponent* SpringArm;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera")
-	class UArrowComponent* WeaponMount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon")
+	class UArrowComponent* WeaponMountRight;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon")
+	class UArrowComponent* WeaponMountLeft;
 
 	UPROPERTY()
-	class AWeaponBase* CurrentWeapon;
+	class AWeaponBase* CurrentRightWeapon;
+
+	UPROPERTY()
+	class AWeaponBase* CurrentLeftWeapon;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player")
 	class USphereComponent* InteractSphere;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player")
+	class UWidgetComponent* HealthBarComponent;
 
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
@@ -47,9 +56,12 @@ public:
 	void Interact();
 	void HoldWeapon(class AWeaponBase* Weapon);
 	void DropWeapon();
-	void FirePressed();
-	void FireReleased();
-	void Fire(bool Toggle);
+	void FireRightPressed();
+	void FireLeftPressed();
+	void FireRightReleased();
+	void FireLeftReleased();
+	void FireRight(bool Toggle);
+	void FireLeft(bool Toggle);
 
 	float MaxHealth = 100;
 	float Health = MaxHealth;
@@ -63,6 +75,15 @@ protected:
 	virtual void BeginPlay() override;
 
 	class UFloatingPawnMovement* FloatingPawnMovement;
+
+	UFUNCTION()
+	void  OnCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION()
+	void OnCollisionBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void OnCollisionBoxHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	float CurrentVelocity = 0;
 

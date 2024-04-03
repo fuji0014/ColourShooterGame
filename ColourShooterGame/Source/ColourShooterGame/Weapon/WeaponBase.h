@@ -8,9 +8,12 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponFiredSignature);
 
-/**
- * 
- */
+UENUM(BlueprintType)
+enum class EWeaponType :uint8 {
+	LeftWeapon = 0,
+	RightWeapon = 1
+};
+
 UCLASS()
 class COLOURSHOOTERGAME_API AWeaponBase : public AItemBase
 {
@@ -39,6 +42,9 @@ public:
 	void ReleaseTrigger();
 
 	FVector GetMuzzleLocation() const;
+
+	UPROPERTY(EditAnywhere, Category = "WeaponType")
+	EWeaponType weaponPosition;
 
 protected:
 	AWeaponBase();

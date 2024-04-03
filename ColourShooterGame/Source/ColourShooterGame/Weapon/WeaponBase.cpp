@@ -72,7 +72,13 @@ void AWeaponBase::Attach(class APawn* Character)
 	//CALL AttachToComponent() and pass in (Character->GetSkeletalMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "WeaponSocket") <-- We are attaching this Actor to the Characters Skeletal Mesh at the WeaponSocket
 	//AttachToComponent(Character->GetSkeletalMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "WeaponSocket");
 	//AttachToComponent(Cast<AMainPawn>(Character)->WeaponMount, FAttachmentTransformRules::SnapToTargetIncludingScale);
-	AttachToComponent(Cast<AMainPawn>(Character)->VisualMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, "MountPoint1");
+	if (weaponPosition == EWeaponType::RightWeapon) {
+		AttachToComponent(Cast<AMainPawn>(Character)->WeaponMountRight, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	}
+	else {
+		AttachToComponent(Cast<AMainPawn>(Character)->WeaponMountLeft, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	}
+	//AttachToComponent(Cast<AMainPawn>(Character)->VisualMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, "MountPoint1");
 	//AttachToComponent(Cast<AMainPawn>(Character)->VisualMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, "MountPoint2");
 }
 

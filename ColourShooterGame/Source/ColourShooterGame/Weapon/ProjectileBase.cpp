@@ -41,8 +41,11 @@ void AProjectileBase::Tick(float DeltaTime)
 
 void AProjectileBase::OnActorHit(AActor* Self, AActor* Other, FVector NormalImpulse, const FHitResult& Hit)
 {
+	PrintMessageOnScreen("Hit actor");
+
 	if (Other != nullptr)
 	{
+		PrintMessageOnScreen("Adding health");
 		FDamageEvent DamageEvent;
 		Other->TakeDamage(Damage, DamageEvent, nullptr, this);
 	}
@@ -54,4 +57,12 @@ void AProjectileBase::OnActorHit(AActor* Self, AActor* Other, FVector NormalImpu
 void AProjectileBase::DestroySelf()
 {
 	Destroy();
+}
+
+void AProjectileBase::PrintMessageOnScreen(FString Message)
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(2, 10.f, FColor::Red, Message);
+	}
 }
