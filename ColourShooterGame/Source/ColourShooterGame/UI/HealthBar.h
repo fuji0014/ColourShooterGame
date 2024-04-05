@@ -22,6 +22,8 @@ public:
 	virtual bool Initialize() override;
 
 	UFUNCTION()
-	float SetHealthProgress();
+	void SetHealthPercentage(float Percentage);
+
+	class AMainPawn* MainPawn;
 	
 };

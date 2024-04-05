@@ -3,6 +3,7 @@
 
 #include "MainPawn.h"
 #include "../Weapon/WeaponBase.h"
+#include "../UI/HealthBar.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -64,7 +65,8 @@ AMainPawn::AMainPawn()
 
 	HealthBarComponent = CreateDefaultSubobject<UWidgetComponent>("Health Bar");
 	HealthBarComponent->SetupAttachment(RootComponent);
-
+	
+	//HealthBarComponent = FindComponentByClass<UHealthBar>();
 }
 
 void AMainPawn::MoveForward(float Amount)
@@ -136,7 +138,7 @@ void AMainPawn::Interact()
 		InteractSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		InteractSphere->SetGenerateOverlapEvents(true);
 
-		DrawDebugSphere(GetWorld(), GetActorLocation(), InteractSphere->GetUnscaledSphereRadius(), 26, FColor(181, 0, 0), false, 2, 0, 2);
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), InteractSphere->GetUnscaledSphereRadius(), 26, FColor(181, 0, 0), false, 2, 0, 2);
 	}
 	else
 	{
@@ -252,7 +254,20 @@ void AMainPawn::FireLeft(bool Toggle)
 
 void AMainPawn::DecreaseHealth()
 {
-	Health -= 10;
+	UE_LOG(LogTemp, Warning, TEXT("Pawn Health: %f"), Health);
+	Health -= 1;
+	Health = FMath::Max(Health, 0.0f);
+	if (Health <= 0) {
+		UE_LOG(LogTemp, Warning, TEXT("Pawn Health: %f, DEAD"), Health);
+		//Destroy();
+		Health = 100;
+	}
+
+	if (HealthBarComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("		Updating Health bar MainPawn"));
+		UpdateHealthBar();
+	}
 }
 
 void AMainPawn::OnWeaponFired()
@@ -289,4 +304,20 @@ void AMainPawn::OnCollisionBoxHit(UPrimitiveComponent* HitComponent, AActor* Oth
 		FString Message = FString("OnCollisionBoxHit: ") + OtherActor->GetName();
 		PrintMessageOnScreen(Message);
 	}
+}
+
+void AMainPawn::UpdateHealthBar()
+{
+	UE_LOG(LogTemp, Warning, TEXT("UpdateHealthBar"));
+
+	if (HealthBarComponent) {
+		UHealthBar* HealthBarWidget = Cast<UHealthBar>(HealthBarComponent->GetUserWidgetObject());
+		if (HealthBarWidget)
+		{
+			float HealthPercentage = Health / MaxHealth;
+			// Call the function in UHealthBar to update the progress bar
+			HealthBarWidget->SetHealthPercentage(HealthPercentage);
+		}
+	}
+
 }

@@ -85,6 +85,9 @@ protected:
 	UFUNCTION()
 	void OnCollisionBoxHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	UFUNCTION()
+	void UpdateHealthBar();
+
 	float CurrentVelocity = 0;
 
 public:	
@@ -93,6 +96,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 private:
 	void PrintMessageOnScreen(FString Message);
 };

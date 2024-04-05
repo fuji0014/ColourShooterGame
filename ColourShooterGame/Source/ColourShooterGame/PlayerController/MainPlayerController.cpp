@@ -3,12 +3,31 @@
 
 #include "MainPlayerController.h"
 #include "../Pawn/MainPawn.h"
+#include "../UI/PlayerHUD.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
 
 // Sets default values
 AMainPlayerController::AMainPlayerController()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AMainPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	UE_LOG(LogTemp, Warning, TEXT("Begin play controller"));
+	//UI HUD
+	if (WBP_PlayerHUD)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Begin play HUD"));
+		MyHud = CreateWidget<UPlayerHUD>(GetWorld(), WBP_PlayerHUD);
+		MyHud->AddToViewport();
+	}
+
+	bEnableClickEvents = true;
+	bShowMouseCursor = true;
 }
 
 void AMainPlayerController::AcknowledgePossession(APawn* P)
@@ -34,5 +53,25 @@ void AMainPlayerController::OnUnPossess()
 void AMainPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	
+
+	if (InputComponent)
+	{
+		//UI HUD
+		InputComponent->BindAction("ShowRestartButtonOnHUD", IE_Pressed, this, &AMainPlayerController::ShowRestartButtonOnHud);
+	}
 }
+
+//UI HUD
+void AMainPlayerController::ShowRestartButtonOnHud()
+{
+	if (MyHud)
+	{
+		if (!MyHud->ClickMeButton->IsVisible())
+			MyHud->ClickMeButton->SetVisibility(ESlateVisibility::Visible);
+		else
+		{
+			MyHud->ClickMeButton->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+

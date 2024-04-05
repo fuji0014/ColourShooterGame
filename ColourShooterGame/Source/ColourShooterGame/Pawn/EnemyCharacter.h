@@ -6,6 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "EnemyCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class EEnemyType :uint8 {
+	RedEnemy = 0,
+	BlueEnemy = 1
+};
 UCLASS()
 class COLOURSHOOTERGAME_API AEnemyCharacter : public AActor
 {
@@ -21,15 +26,19 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Enemy")
 	UStaticMeshComponent* VisualMesh;
 
-	UPROPERTY(EditAnywhere)
-	float MaximumHealth = 50.0f;
-
-	UPROPERTY(BlueprintReadOnly)
-	float CurrentHealth;
+	float MaxHealth = 100;
+	float Health = MaxHealth;
+	void DecreaseHealth();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnHitActor(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION()
+	void OnCollisionSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 
 public:	
@@ -37,6 +46,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	class AMainPawn* MainPawn;
+
+	//UPROPERTY(EditAnywhere, Category = "EnemyType")
+	EEnemyType EnemyType;
 
 private:
 	void PrintMessageOnScreen(FString Message);

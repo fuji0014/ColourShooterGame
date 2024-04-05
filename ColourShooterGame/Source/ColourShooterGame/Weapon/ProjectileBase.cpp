@@ -3,6 +3,7 @@
 
 #include "ProjectileBase.h"
 #include "Engine/DamageEvents.h"
+#include "../Pawn/EnemyCharacter.h"
 
 // Sets default values
 AProjectileBase::AProjectileBase()
@@ -18,6 +19,7 @@ AProjectileBase::AProjectileBase()
 
 void AProjectileBase::PostInitializeComponents()
 {
+	UE_LOG(LogTemp, Warning, TEXT("PostInitializeComponents"));
 	Super::PostInitializeComponents();
 	AActor::OnActorHit.AddDynamic(this, &AProjectileBase::OnActorHit);
 }
@@ -41,13 +43,19 @@ void AProjectileBase::Tick(float DeltaTime)
 
 void AProjectileBase::OnActorHit(AActor* Self, AActor* Other, FVector NormalImpulse, const FHitResult& Hit)
 {
-	PrintMessageOnScreen("Hit actor");
+	UE_LOG(LogTemp, Warning, TEXT("OnActorHit"));
 
-	if (Other != nullptr)
+	if (Other && Other != this && Other->IsA<AEnemyCharacter>()) // Check if the hit actor is not null and is of type UEnemyCharacter
 	{
-		PrintMessageOnScreen("Adding health");
-		FDamageEvent DamageEvent;
-		Other->TakeDamage(Damage, DamageEvent, nullptr, this);
+		AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(Other); // Cast the hit actor to UEnemyCharacter
+		if (EnemyCharacter)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit EnemyCharacter"));
+			// Apply damage to the enemy character
+			/*FDamageEvent DamageEvent;
+			EnemyCharacter->TakeDamage(Damage, DamageEvent, nullptr, this);*/
+			EnemyCharacter->DecreaseHealth();
+		}
 	}
 
 	// Destroy self.
