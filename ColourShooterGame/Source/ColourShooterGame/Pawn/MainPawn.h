@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include <GameFramework/Character.h>
 #include "MainPawn.generated.h"
 
 
 UCLASS()
-class COLOURSHOOTERGAME_API AMainPawn : public APawn
+class COLOURSHOOTERGAME_API AMainPawn : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -47,9 +47,20 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player")
 	class UWidgetComponent* HealthBarComponent;
 
+	UPROPERTY(EditDefaultsOnly)
+	float MaxWalkSpeed;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MaxJogSpeed;
+
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
 	void Turn(float Amount);
+
+	void MoveVertical(float Amount);
+	void MoveHorizontal(float Amount);
+
+	void Move(FVector Direction, float Amount);
 
 	bool bIsFiring;
 
@@ -74,7 +85,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	class UFloatingPawnMovement* FloatingPawnMovement;
+	//class UFloatingPawnMovement* FloatingPawnMovement;
 
 	UFUNCTION()
 	void  OnCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

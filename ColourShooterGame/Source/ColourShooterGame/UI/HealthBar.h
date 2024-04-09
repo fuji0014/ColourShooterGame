@@ -24,6 +24,6 @@ public:
 	UFUNCTION()
 	void SetHealthPercentage(float Percentage);
 
-	class AMainPawn* MainPawn;
+	class AMainCharacter* MainChar;
 	
 };

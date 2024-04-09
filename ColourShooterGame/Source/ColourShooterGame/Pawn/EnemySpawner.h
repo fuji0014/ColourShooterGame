@@ -28,7 +28,10 @@ public:
 	float DifficultyScalar;
 
 	UPROPERTY(EditAnywhere, Category = "Class to Spawn")
-	TSubclassOf<class AEnemyCharacter> EnemyBlueprint;
+	TSubclassOf<class AEnemyCharacter> EnemyRedBlueprint;
+
+	UPROPERTY(EditAnywhere, Category = "Class to Spawn")
+	TSubclassOf<class AEnemyCharacter> EnemyBlueBlueprint;
 
 	void SpawnEnemy();
 

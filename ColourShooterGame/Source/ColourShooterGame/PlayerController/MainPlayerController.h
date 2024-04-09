@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "MainPlayerController.generated.h"
 
@@ -41,5 +40,5 @@ public:
 
 	virtual void SetupInputComponent() override;
 
-	class AMainPawn* TheMainPawn;
+	class AMainCharacter* TheMainChar;
 };

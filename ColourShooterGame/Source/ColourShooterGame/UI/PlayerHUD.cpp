@@ -3,7 +3,7 @@
 
 #include "PlayerHUD.h"
 
-#include "../Pawn/MainPawn.h"
+#include "../Pawn/MainCharacter.h"
 #include "../Weapon/WeaponBase.h"
 #include "Components/Button.h"
 #include "Components/ProgressBar.h"
@@ -42,11 +42,11 @@ FText UPlayerHUD::SetWeaponAmmoCount()
 	APlayerController* PC = GetOwningPlayer();
 	if (PC)
 	{
-		AMainPawn* PlayerPawn = Cast<AMainPawn>(PC->GetPawn());
-		if (PlayerPawn)
+		AMainCharacter* PlayerChar = Cast<AMainCharacter>(PC->GetPawn());
+		if (PlayerChar)
 		{
-			AWeaponBase* WeaponRight = PlayerPawn->CurrentRightWeapon;
-			AWeaponBase* WeaponLeft = PlayerPawn->CurrentLeftWeapon;
+			AWeaponBase* WeaponRight = PlayerChar->CurrentRightWeapon;
+			AWeaponBase* WeaponLeft = PlayerChar->CurrentLeftWeapon;
 			//WeaponAmmoCountText->SetText(FText::AsNumber(Weapon->CurrentAmmo) );
 			//return FText::FromString(FString::FromInt(Weapon->CurrentAmmo));
 			int AmmoRightCount = 0;
@@ -76,10 +76,10 @@ float UPlayerHUD::SetHealthProgress()
 	APlayerController* PC = GetOwningPlayer();
 	if (PC)
 	{
-		AMainPawn* PlayerPawn = Cast<AMainPawn>(PC->GetPawn());
-		if (PlayerPawn)
+		AMainCharacter* PlayerChar = Cast<AMainCharacter>(PC->GetPawn());
+		if (PlayerChar)
 		{
-			return PlayerPawn->Health / PlayerPawn->MaxHealth;
+			return PlayerChar->CurrentHealth / PlayerChar->MaximumHealth;
 		}
 
 	}

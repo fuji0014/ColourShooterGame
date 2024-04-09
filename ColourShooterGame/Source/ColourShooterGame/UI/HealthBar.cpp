@@ -3,7 +3,7 @@
 
 #include "HealthBar.h"
 #include "Components/ProgressBar.h"
-#include "../Pawn/MainPawn.h"
+#include "../Pawn/MainCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 bool UHealthBar::Initialize()
@@ -12,9 +12,9 @@ bool UHealthBar::Initialize()
 	UE_LOG(LogTemp, Warning, TEXT("HealthBar Initialize"));
 	if (HealthBar)
 	{
-		MainPawn = Cast<AMainPawn>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainPawn::StaticClass()));
+		MainChar = Cast<AMainCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainCharacter::StaticClass()));
 		HealthBar->SetPercent(100);
-		if(MainPawn)
+		if(MainChar)
 			HealthBar->PercentDelegate.BindUFunction(this, "UpdateHealthBar");
 	}
 	return true;

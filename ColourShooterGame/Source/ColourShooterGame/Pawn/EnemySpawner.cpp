@@ -19,7 +19,7 @@ AEnemySpawner::AEnemySpawner()
     // Set default values for spawn delay range and difficulty scalar
     SpawnDelayRangeLow = 1.0f;
     SpawnDelayRangeHigh = 2.0f;
-    DifficultyScalar = 0.5f;
+    DifficultyScalar = 0.25f;
 }
 
 // Called when the game starts or when spawned
@@ -46,7 +46,18 @@ void AEnemySpawner::SpawnEnemy()
     float SpawnDelay = FMath::FRandRange(SpawnDelayRangeLow, SpawnDelayRangeHigh);
 
     FVector SpawnLocation = GetRandomPointInVolume();
-    AEnemyCharacter* NewEnemy = GetWorld()->SpawnActor<AEnemyCharacter>(EnemyBlueprint, SpawnLocation, FRotator::ZeroRotator);
+
+    int32 RandomIndex = FMath::RandBool() ? 1 : 0;
+    if (RandomIndex == 0) {
+        AEnemyCharacter* NewEnemy = GetWorld()->SpawnActor<AEnemyCharacter>(EnemyRedBlueprint, SpawnLocation, FRotator::ZeroRotator);
+        NewEnemy->EnemyType = EEnemyType::RedEnemy;
+    }
+    else 
+    {
+        AEnemyCharacter* NewEnemy = GetWorld()->SpawnActor<AEnemyCharacter>(EnemyBlueBlueprint, SpawnLocation, FRotator::ZeroRotator);
+        NewEnemy->EnemyType = EEnemyType::BlueEnemy;
+    }
+    
 
     // Set timer for the next spawn
     GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AEnemySpawner::SpawnEnemy, SpawnDelay, false);

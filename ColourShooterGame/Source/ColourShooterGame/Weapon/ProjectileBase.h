@@ -6,6 +6,12 @@
 #include "GameFramework/Actor.h"
 #include "ProjectileBase.generated.h"
 
+UENUM(BlueprintType)
+enum class ERayColour :uint8 {
+	RedRay = 0,
+	BlueRay = 1
+};
+
 UCLASS()
 class COLOURSHOOTERGAME_API AProjectileBase : public AActor
 {
@@ -21,6 +27,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	float LifeTime;
 
+	UPROPERTY(EditAnywhere, Category = "RayColour")
+	ERayColour rayColour;
+
 protected:
 	AProjectileBase();
 
@@ -33,8 +42,6 @@ protected:
 
 private:
 	void DestroySelf();
-
-private:
 	FTimerHandle Timer;
 	void PrintMessageOnScreen(FString Message);
 

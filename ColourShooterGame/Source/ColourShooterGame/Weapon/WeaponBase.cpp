@@ -7,9 +7,9 @@
 #include <Components/PrimitiveComponent.h>
 #include <Components/ArrowComponent.h>
 #include <Components/SphereComponent.h>
-#include "ProjectileBase.h"
+//#include "ProjectileBase.h"
 
-#include "../Pawn/MainPawn.h"
+#include "../Pawn/MainCharacter.h"
 
 AWeaponBase::AWeaponBase() : Primitive(nullptr),	Muzzle(nullptr)
 {
@@ -72,11 +72,11 @@ void AWeaponBase::Attach(class APawn* Character)
 	//CALL AttachToComponent() and pass in (Character->GetSkeletalMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "WeaponSocket") <-- We are attaching this Actor to the Characters Skeletal Mesh at the WeaponSocket
 	//AttachToComponent(Character->GetSkeletalMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "WeaponSocket");
 	//AttachToComponent(Cast<AMainPawn>(Character)->WeaponMount, FAttachmentTransformRules::SnapToTargetIncludingScale);
-	if (weaponPosition == EWeaponType::RightWeapon) {
-		AttachToComponent(Cast<AMainPawn>(Character)->WeaponMountRight, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	if (weaponPosition == EWeaponType::RightBlueWeapon) {
+		AttachToComponent(Cast<AMainCharacter>(Character)->WeaponMountRight, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 	else {
-		AttachToComponent(Cast<AMainPawn>(Character)->WeaponMountLeft, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		AttachToComponent(Cast<AMainCharacter>(Character)->WeaponMountLeft, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 	//AttachToComponent(Cast<AMainPawn>(Character)->VisualMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, "MountPoint1");
 	//AttachToComponent(Cast<AMainPawn>(Character)->VisualMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, "MountPoint2");

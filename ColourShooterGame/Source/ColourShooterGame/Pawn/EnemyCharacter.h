@@ -45,9 +45,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	class AMainPawn* MainPawn;
+	class AMainCharacter* MainChar;
 
-	//UPROPERTY(EditAnywhere, Category = "EnemyType")
+	UPROPERTY(EditAnywhere, Category = "EnemyType")
 	EEnemyType EnemyType;
 
 private:

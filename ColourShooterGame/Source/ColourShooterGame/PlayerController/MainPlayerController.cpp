@@ -2,7 +2,7 @@
 
 
 #include "MainPlayerController.h"
-#include "../Pawn/MainPawn.h"
+#include "../Pawn/MainCharacter.h"
 #include "../UI/PlayerHUD.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
@@ -34,7 +34,7 @@ void AMainPlayerController::AcknowledgePossession(APawn* P)
 {
 	Super::AcknowledgePossession(P);
 
-	TheMainPawn = Cast<AMainPawn>(P);
+	TheMainChar = Cast<AMainCharacter>(P);
 
 }
 

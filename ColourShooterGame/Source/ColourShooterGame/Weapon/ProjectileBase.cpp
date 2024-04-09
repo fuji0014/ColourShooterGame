@@ -4,6 +4,7 @@
 #include "ProjectileBase.h"
 #include "Engine/DamageEvents.h"
 #include "../Pawn/EnemyCharacter.h"
+#include "../PlayerController/MainPlayerController.h"
 
 // Sets default values
 AProjectileBase::AProjectileBase()
@@ -50,11 +51,17 @@ void AProjectileBase::OnActorHit(AActor* Self, AActor* Other, FVector NormalImpu
 		AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(Other); // Cast the hit actor to UEnemyCharacter
 		if (EnemyCharacter)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Hit EnemyCharacter"));
-			// Apply damage to the enemy character
-			/*FDamageEvent DamageEvent;
-			EnemyCharacter->TakeDamage(Damage, DamageEvent, nullptr, this);*/
-			EnemyCharacter->DecreaseHealth();
+			if (EnemyCharacter->EnemyType == EEnemyType::RedEnemy && this->rayColour == ERayColour::RedRay) {
+				UE_LOG(LogTemp, Warning, TEXT("Hit Red EnemyCharacter"));
+				// Apply damage to the enemy character
+				/*FDamageEvent DamageEvent;
+				EnemyCharacter->TakeDamage(Damage, DamageEvent, nullptr, this);*/
+				EnemyCharacter->DecreaseHealth();
+			}
+			else if (EnemyCharacter->EnemyType == EEnemyType::BlueEnemy && this->rayColour==ERayColour::BlueRay) {
+				UE_LOG(LogTemp, Warning, TEXT("Hit Blue EnemyCharacter"));
+				EnemyCharacter->DecreaseHealth();
+			}			
 		}
 	}
 
@@ -74,3 +81,4 @@ void AProjectileBase::PrintMessageOnScreen(FString Message)
 		GEngine->AddOnScreenDebugMessage(2, 10.f, FColor::Red, Message);
 	}
 }
+

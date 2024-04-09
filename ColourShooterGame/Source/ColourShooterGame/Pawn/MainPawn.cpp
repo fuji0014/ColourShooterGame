@@ -4,6 +4,7 @@
 #include "MainPawn.h"
 #include "../Weapon/WeaponBase.h"
 #include "../UI/HealthBar.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -29,7 +30,7 @@ AMainPawn::AMainPawn()
 	VisualMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualMesh"));
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
+	//FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
 
 	BoxComponent->SetSimulatePhysics(true);
 	BoxComponent->SetCollisionProfileName("Pawn");
@@ -67,16 +68,23 @@ AMainPawn::AMainPawn()
 	HealthBarComponent->SetupAttachment(RootComponent);
 	
 	//HealthBarComponent = FindComponentByClass<UHealthBar>();
+
+	MaxWalkSpeed = 140.0f;
+	MaxJogSpeed = 280.0f;
+
+	GetCharacterMovement()->MaxWalkSpeed = MaxJogSpeed;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+
 }
 
 void AMainPawn::MoveForward(float Amount)
 {
-	FloatingPawnMovement->AddInputVector(GetActorForwardVector() * Amount);
+	//FloatingPawnMovement->AddInputVector(GetActorForwardVector() * Amount);
 }
 
 void AMainPawn::MoveRight(float Amount)
 {
-	FloatingPawnMovement->AddInputVector(GetActorRightVector() * Amount);
+	//FloatingPawnMovement->AddInputVector(GetActorRightVector() * Amount);
 }
 
 void AMainPawn::Turn(float Amount)
@@ -101,6 +109,7 @@ void AMainPawn::BeginPlay()
 void AMainPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//UpdateMovement(DeltaTime);
 
 }
 
@@ -109,8 +118,11 @@ void AMainPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMainPawn::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMainPawn::MoveRight);
+	InputComponent->BindAxis("MoveForward", this, &AMainPawn::MoveVertical);
+	InputComponent->BindAxis("MoveRight", this, &AMainPawn::MoveHorizontal);
+
+	//PlayerInputComponent->BindAxis("MoveForward", this, &AMainPawn::MoveForward);
+	//PlayerInputComponent->BindAxis("MoveRight", this, &AMainPawn::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &AMainPawn::Turn);
 	//PlayerInputComponent->BindAxis("LookUp", this, &AMainPawn::AddControllerPitchInput);
 
@@ -167,7 +179,7 @@ void AMainPawn::Interact()
 void AMainPawn::HoldWeapon(AWeaponBase* Weapon)
 {
 	//DropWeapon();
-	if (Weapon->weaponPosition == EWeaponType::RightWeapon) {
+	if (Weapon->weaponPosition == EWeaponType::RightBlueWeapon) {
 		CurrentRightWeapon = Weapon;
 		CurrentRightWeapon->Attach(this);
 
@@ -320,4 +332,20 @@ void AMainPawn::UpdateHealthBar()
 		}
 	}
 
+}
+
+void AMainPawn::MoveVertical(float Amount)
+{
+
+	Move(FVector(1.0f, 0.0f, 0.0f), Amount);
+}
+
+void AMainPawn::MoveHorizontal(float Amount)
+{
+	Move(FVector(0.0f, 1.0f, 0.0f), Amount);
+}
+
+void AMainPawn::Move(FVector Direction, float Amount)
+{
+	AddMovementInput(Direction, Amount);
 }

@@ -10,8 +10,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponFiredSignature);
 
 UENUM(BlueprintType)
 enum class EWeaponType :uint8 {
-	LeftWeapon = 0,
-	RightWeapon = 1
+	LeftRedWeapon = 0,
+	RightBlueWeapon = 1
 };
 
 UCLASS()
