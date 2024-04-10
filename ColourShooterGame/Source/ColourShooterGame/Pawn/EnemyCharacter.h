@@ -6,11 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "EnemyCharacter.generated.h"
 
-UENUM(BlueprintType)
-enum class EEnemyType :uint8 {
-	RedEnemy = 0,
-	BlueEnemy = 1
-};
+//UENUM(BlueprintType)
+//enum class EEnemyType :uint8 {
+//	RedEnemy = 0,
+//	BlueEnemy = 1
+//};
 UCLASS()
 class COLOURSHOOTERGAME_API AEnemyCharacter : public AActor
 {
@@ -47,8 +47,8 @@ public:
 
 	class AMainCharacter* MainChar;
 
-	UPROPERTY(EditAnywhere, Category = "EnemyType")
-	EEnemyType EnemyType;
+	/*UPROPERTY(EditAnywhere, Category = "EnemyType")
+	EEnemyType EnemyType;*/
 
 private:
 	void PrintMessageOnScreen(FString Message);

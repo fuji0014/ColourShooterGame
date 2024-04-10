@@ -3,7 +3,7 @@
 
 #include "ProjectileBase.h"
 #include "Engine/DamageEvents.h"
-#include "../Pawn/EnemyCharacter.h"
+#include "../Pawn/Enemy.h"
 #include "../PlayerController/MainPlayerController.h"
 
 // Sets default values
@@ -46,9 +46,9 @@ void AProjectileBase::OnActorHit(AActor* Self, AActor* Other, FVector NormalImpu
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnActorHit"));
 
-	if (Other && Other != this && Other->IsA<AEnemyCharacter>()) // Check if the hit actor is not null and is of type UEnemyCharacter
+	if (Other && Other != this && Other->IsA<AEnemy>()) // Check if the hit actor is not null and is of type UEnemyCharacter
 	{
-		AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(Other); // Cast the hit actor to UEnemyCharacter
+		AEnemy* EnemyCharacter = Cast<AEnemy>(Other); // Cast the hit actor to UEnemyCharacter
 		if (EnemyCharacter)
 		{
 			if (EnemyCharacter->EnemyType == EEnemyType::RedEnemy && this->rayColour == ERayColour::RedRay) {

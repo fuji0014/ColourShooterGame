@@ -4,7 +4,7 @@
 #include "EnemySpawner.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "EnemyCharacter.h"
+#include "Enemy.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -49,12 +49,12 @@ void AEnemySpawner::SpawnEnemy()
 
     int32 RandomIndex = FMath::RandBool() ? 1 : 0;
     if (RandomIndex == 0) {
-        AEnemyCharacter* NewEnemy = GetWorld()->SpawnActor<AEnemyCharacter>(EnemyRedBlueprint, SpawnLocation, FRotator::ZeroRotator);
+        AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(EnemyRedBlueprint, SpawnLocation, FRotator::ZeroRotator);
         NewEnemy->EnemyType = EEnemyType::RedEnemy;
     }
     else 
     {
-        AEnemyCharacter* NewEnemy = GetWorld()->SpawnActor<AEnemyCharacter>(EnemyBlueBlueprint, SpawnLocation, FRotator::ZeroRotator);
+        AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(EnemyBlueBlueprint, SpawnLocation, FRotator::ZeroRotator);
         NewEnemy->EnemyType = EEnemyType::BlueEnemy;
     }
     

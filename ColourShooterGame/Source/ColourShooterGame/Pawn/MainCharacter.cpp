@@ -30,7 +30,7 @@ AMainCharacter::AMainCharacter() :
 	MaxWalkSpeed = 140.0f;
 	MaxJogSpeed = 280.0f;
 
-	bUseControllerRotationYaw = false;
+	//bUseControllerRotationYaw = false;
 
 	//GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -54,11 +54,11 @@ void AMainCharacter::PostInitializeComponents()
 	if (SpringArm)
 	{
 		SpringArm->bDoCollisionTest = false;
-		SpringArm->bInheritPitch = false;
-		SpringArm->bInheritYaw = false;
-		SpringArm->bInheritRoll = false;
-		SpringArm->bEnableCameraLag = true;
-		SpringArm->CameraLagSpeed = 3.0f;
+		//SpringArm->bInheritPitch = false;
+		//SpringArm->bInheritYaw = false;
+		//SpringArm->bInheritRoll = false;
+		//SpringArm->bEnableCameraLag = true;
+		//SpringArm->CameraLagSpeed = 3.0f;
 	}
 }
 
@@ -106,12 +106,12 @@ void AMainCharacter::UpdateMovement(float DeltaTime)
 
 void AMainCharacter::MoveVertical(float Scale)
 {
-	Move(FVector(1.0f, 0.0f, 0.0f), Scale);
+	Move(GetActorForwardVector(), Scale);
 }
 
 void AMainCharacter::MoveHorizontal(float Scale)
 {
-	Move(FVector(0.0f, 1.0f, 0.0f), Scale);
+	Move(GetActorRightVector(), Scale);
 }
 
 void AMainCharacter::Move(FVector Direction, float Scale)
