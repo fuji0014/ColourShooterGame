@@ -18,9 +18,9 @@ AEnemySpawner::AEnemySpawner()
     SetRootComponent(SpawnVolume);
 
     // Set default values for spawn delay range and difficulty scalar
-    SpawnDelayRangeLow = 1.0f;
-    SpawnDelayRangeHigh = 2.0f;
-    DifficultyScalar = 0.1f;
+    SpawnDelayRangeLow = 5.0f;
+    SpawnDelayRangeHigh = 10.0f;
+    DifficultyScalar = 1.0f;
 
     PauseSpawning();
 }
