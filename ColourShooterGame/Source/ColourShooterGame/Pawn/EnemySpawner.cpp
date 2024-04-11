@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Enemy.h"
+#include "../GameState/ColourShooterGameStateBase.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -19,21 +20,22 @@ AEnemySpawner::AEnemySpawner()
     // Set default values for spawn delay range and difficulty scalar
     SpawnDelayRangeLow = 1.0f;
     SpawnDelayRangeHigh = 2.0f;
-    DifficultyScalar = 0.25f;
+    DifficultyScalar = 0.1f;
+
+    PauseSpawning();
 }
 
 // Called when the game starts or when spawned
 void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
-    StartSpawnTimer();
 }
 
 // Called every frame
 void AEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+    
 }
 
 void AEnemySpawner::SpawnEnemy()
@@ -74,4 +76,17 @@ void AEnemySpawner::StartSpawnTimer()
 {
     // Initial spawn delay
     SpawnEnemy();
+}
+
+void AEnemySpawner::PauseSpawning()
+{
+    UE_LOG(LogTemp, Warning, TEXT("SetActorTickEnabled FALSE!"));
+    SetActorTickEnabled(false);
+}
+
+void AEnemySpawner::ResumeSpawning()
+{
+    UE_LOG(LogTemp, Warning, TEXT("SetActorTickEnabled TRUE!"));
+    SetActorTickEnabled(true);
+    StartSpawnTimer();
 }

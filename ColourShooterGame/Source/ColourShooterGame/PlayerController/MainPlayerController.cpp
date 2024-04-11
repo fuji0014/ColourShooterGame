@@ -66,12 +66,7 @@ void AMainPlayerController::ShowRestartButtonOnHud()
 {
 	if (MyHud)
 	{
-		if (!MyHud->ClickMeButton->IsVisible())
-			MyHud->ClickMeButton->SetVisibility(ESlateVisibility::Visible);
-		else
-		{
-			MyHud->ClickMeButton->SetVisibility(ESlateVisibility::Hidden);
-		}
+		MyHud->ShowLostScreen();
 	}
 }
 

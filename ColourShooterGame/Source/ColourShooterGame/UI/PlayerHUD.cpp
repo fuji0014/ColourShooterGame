@@ -4,18 +4,53 @@
 #include "PlayerHUD.h"
 
 #include "../Pawn/MainCharacter.h"
+#include "../Pawn/EnemySpawner.h"
+#include "../GameState/ColourShooterGameStateBase.h"
 #include "../Weapon/WeaponBase.h"
 #include "Components/Button.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Components/BackgroundBlur.h"
 #include "Styling/SlateColor.h"
+#include "Kismet/GameplayStatics.h"
 
 //UI HUD
 void UPlayerHUD::NativeConstruct()
 {
+	APlayerController* PC = GetOwningPlayer();
+	if (PC)
+	{
+		AColourShooterGameStateBase* GameState = Cast<AColourShooterGameStateBase>(GetWorld()->GetGameState());
+		if (GameState && !GameState->GameStarted)
+		{
+			PC->SetIgnoreMoveInput(true);
+			PC->SetIgnoreLookInput(true);
+
+			AEnemySpawner* Spawner = Cast<AEnemySpawner>(UGameplayStatics::GetActorOfClass(GetWorld(), AEnemySpawner::StaticClass()));
+			if(Spawner)
+			{
+				Spawner->PauseSpawning();
+			}
+		}
+	}
+	
 	if (ClickMeButton)
 	{
+		ClickMeButton->SetVisibility(ESlateVisibility::Hidden);
 		ClickMeButton->OnClicked.AddDynamic(this, &UPlayerHUD::ButtonClicked);
+		YouLostText->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+
+	if (StartButton)
+	{
+		StartButton->SetVisibility(ESlateVisibility::Visible);
+		StartButton->OnClicked.AddDynamic(this, &UPlayerHUD::StartButtonClicked);
+	}
+
+	if (BackgroundBlur)
+	{
+		BackgroundBlur->SetBlurStrength(5.0f);
 	}
 }
 
@@ -86,10 +121,42 @@ float UPlayerHUD::SetHealthProgress()
 	return 1;
 }
 
+void UPlayerHUD::ShowLostScreen() 
+{
+	AColourShooterGameStateBase* GameState = GetWorld()->GetGameState<AColourShooterGameStateBase>();
+	if (GameState)
+	{
+		GameState->GameStarted = false;
+		GameState->SpawnerPaused = true;
+	}
+
+	AEnemySpawner* Spawner = Cast<AEnemySpawner>(UGameplayStatics::GetActorOfClass(GetWorld(), AEnemySpawner::StaticClass()));
+	if (Spawner)
+	{
+		Spawner->PauseSpawning();
+	}
+
+	AMainCharacter* MainChar = Cast<AMainCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainCharacter::StaticClass()));
+	if (MainChar)
+	{
+		MainChar->bMovementEnabled = false;
+	}
+
+	if (BackgroundBlur)
+	{
+		BackgroundBlur->SetBlurStrength(5.0f);
+	}
+
+	if (ClickMeButton)
+	{
+		ClickMeButton->SetVisibility(ESlateVisibility::Visible);
+		YouLostText->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
 //UI HUD
 void UPlayerHUD::ButtonClicked()
 {
-	//WeaponAmmoCountText->SetColorAndOpacity(FSlateColor(FLinearColor::Blue));
 
 	APlayerController* PC = GetOwningPlayer();
 	if (PC)
@@ -97,4 +164,48 @@ void UPlayerHUD::ButtonClicked()
 		PC->ConsoleCommand("RestartLevel");
 	}
 
+}
+
+void UPlayerHUD::StartButtonClicked()
+{
+	
+	// Start the game
+	AColourShooterGameStateBase* GameState = Cast<AColourShooterGameStateBase>(GetWorld()->GetGameState());
+	if (GameState)
+	{
+		GameState->GameStarted = true;
+		GameState->SpawnerPaused = false;
+	}
+
+	AEnemySpawner* Spawner = Cast<AEnemySpawner>(UGameplayStatics::GetActorOfClass(GetWorld(), AEnemySpawner::StaticClass()));
+	if (Spawner)
+	{
+		Spawner->ResumeSpawning();
+	}
+
+	AMainCharacter* MainChar = Cast<AMainCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainCharacter::StaticClass()));
+	if (MainChar)
+	{
+		MainChar->bMovementEnabled = true;
+	}
+
+	// Enable player input
+	APlayerController* PC = GetOwningPlayer();
+	if (PC)
+	{
+		PC->SetIgnoreMoveInput(false);
+		PC->SetIgnoreLookInput(false);
+	}
+
+	if (BackgroundBlur)
+	{
+		BackgroundBlur->SetBlurStrength(0.0f);
+	}
+
+	if (StartButton)
+	{
+		StartButton->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	
 }

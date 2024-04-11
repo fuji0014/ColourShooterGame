@@ -42,6 +42,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player")
 	class UWidgetComponent* HealthBarComponent;
 
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player")
+	//TSubclassOf<class UPlayerHUD> WBP_PlayerHUD;
+
+	//class UPlayerHUD* Hud;
+
 	void Move(FVector Direction, float Scale);
 
 	void FireRightPressed();
@@ -87,6 +92,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character")
+	bool bMovementEnabled = false;
 
 private:
 	void UpdateMovement(float DeltaTime);

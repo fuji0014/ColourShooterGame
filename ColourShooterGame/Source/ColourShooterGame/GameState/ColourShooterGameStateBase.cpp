@@ -3,3 +3,9 @@
 
 #include "ColourShooterGameStateBase.h"
 
+
+void AColourShooterGameStateBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+}

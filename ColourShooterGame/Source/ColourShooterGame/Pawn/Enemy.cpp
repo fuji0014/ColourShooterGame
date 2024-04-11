@@ -2,6 +2,7 @@
 
 
 #include "Enemy.h"
+#include "MainCharacter.h"
 #include "NavigationSystem.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -27,10 +28,9 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	OriginalRotator = GetActorRotation();
-	if (bPatrol)
-	{
-		MoveToNextPatrolPoint();
-	}
+	MoveToNextPatrolPoint();
+
+	OnActorHit.AddDynamic(this, &AEnemy::OnHitActor);
 }
 
 void AEnemy::OnPawnSeen(APawn* SeenPawn)
@@ -41,7 +41,7 @@ void AEnemy::OnPawnSeen(APawn* SeenPawn)
 	}
 
 	TargetActor = SeenPawn;
-	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
+	//DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
 	UE_LOG(LogTemp, Warning, TEXT("Seen"));
 
 	SetGuardState(EAIState::Alerted);
@@ -183,5 +183,18 @@ void AEnemy::PrintMessageOnScreen(FString Message)
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(2, 10.f, FColor::Red, Message);
+	}
+}
+
+void AEnemy::OnHitActor(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("hit actor!"));
+	if (OtherActor && OtherActor != this && OtherActor->IsA<AMainCharacter>())
+	{
+		AMainCharacter* HitMainChar = Cast<AMainCharacter>(OtherActor);
+		if (HitMainChar)
+		{
+			HitMainChar->DecreaseHealth();
+		}
 	}
 }

@@ -31,9 +31,6 @@ protected:
 
 	float CurrentVelocity = 0;
 
-	//UI HUD
-	void ShowRestartButtonOnHud();
-
 public:	
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void OnUnPossess() override;
@@ -41,4 +38,7 @@ public:
 	virtual void SetupInputComponent() override;
 
 	class AMainCharacter* TheMainChar;
+
+	//UI HUD
+	void ShowRestartButtonOnHud();
 };

@@ -26,6 +26,15 @@ public:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UProgressBar* HealthBar = nullptr;
 
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UButton* StartButton = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UBackgroundBlur* BackgroundBlur = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* YouLostText = nullptr;
+
 	virtual bool Initialize() override;
 
 	UFUNCTION()
@@ -34,7 +43,16 @@ public:
 	UFUNCTION()
 	float SetHealthProgress();
 
+	UFUNCTION()
+	void ShowLostScreen();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
+	bool bGameStarted;
+
 private:
 	UFUNCTION()
 	void ButtonClicked();
+
+	UFUNCTION()
+	void StartButtonClicked();
 };

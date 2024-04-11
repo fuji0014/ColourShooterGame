@@ -2,6 +2,8 @@
 
 
 #include "ColourShooterGameGameModeBase.h"
+#include "PlayerController/MainPlayerController.h"
+#include "UI/PlayerHUD.h"
 #include "Kismet/GameplayStatics.h"
 
 AColourShooterGameGameModeBase::AColourShooterGameGameModeBase()

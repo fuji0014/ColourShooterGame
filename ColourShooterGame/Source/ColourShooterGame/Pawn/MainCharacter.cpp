@@ -2,8 +2,10 @@
 
 
 #include "MainCharacter.h"
+#include "../PlayerController/MainPlayerController.h"
 #include "../Weapon/WeaponBase.h"
 #include "../UI/HealthBar.h"
+#include "../UI/PlayerHUD.h"
 
 #include <GameFramework/PlayerController.h>
 
@@ -12,6 +14,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter() :
@@ -69,6 +73,12 @@ void AMainCharacter::BeginPlay()
 	SetCanBeDamaged(true);
 	OnTakeAnyDamage.AddDynamic(this, &AMainCharacter::OnTakeDamage);
 	CurrentHealth = MaximumHealth;
+
+	/*if (WBP_PlayerHUD) 
+	{
+		Hud = CreateWidget<UPlayerHUD>(GetWorld(), WBP_PlayerHUD);
+		Hud->AddToViewport();
+	}*/
 }
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -85,6 +95,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	InputComponent->BindAction("FireRight", IE_Released, this, &AMainCharacter::FireRightReleased);
 	InputComponent->BindAction("FireLeft", IE_Pressed, this, &AMainCharacter::FireLeftPressed);
 	InputComponent->BindAction("FireLeft", IE_Released, this, &AMainCharacter::FireLeftReleased);
+	
 }
 
 
@@ -106,37 +117,44 @@ void AMainCharacter::UpdateMovement(float DeltaTime)
 
 void AMainCharacter::MoveVertical(float Scale)
 {
-	Move(GetActorForwardVector(), Scale);
+	if (bMovementEnabled) 
+		Move(GetActorForwardVector(), Scale);
 }
 
 void AMainCharacter::MoveHorizontal(float Scale)
 {
-	Move(GetActorRightVector(), Scale);
+	if (bMovementEnabled)
+		Move(GetActorRightVector(), Scale);
 }
 
 void AMainCharacter::Move(FVector Direction, float Scale)
 {
-	AddMovementInput(Direction, Scale);
+	if (bMovementEnabled)
+		AddMovementInput(Direction, Scale);
 }
 
 void AMainCharacter::FireRightPressed()
 {
-	FireRight(true);
+	if (bMovementEnabled)
+		FireRight(true);
 }
 
 void AMainCharacter::FireRightReleased()
 {
-	FireRight(false);
+	if (bMovementEnabled)
+		FireRight(false);
 }
 
 void AMainCharacter::FireLeftPressed()
 {
-	FireLeft(true);
+	if (bMovementEnabled)
+		FireLeft(true);
 }
 
 void AMainCharacter::FireLeftReleased()
 {
-	FireLeft(false);
+	if (bMovementEnabled)
+		FireLeft(false);
 }
 
 void AMainCharacter::FireRight(bool Toggle)
@@ -171,9 +189,8 @@ void AMainCharacter::FireLeft(bool Toggle)
 
 		bIsFiring = Toggle;
 	}
-
-
 }
+
 void AMainCharacter::Interact()
 {
 	if (!InteractSphere)
@@ -249,7 +266,13 @@ void AMainCharacter::DecreaseHealth()
 	CurrentHealth = FMath::Max(CurrentHealth, 0.0f);
 	if (CurrentHealth <= 0) {
 		//Destroy();
-		CurrentHealth = 100;
+		//CurrentHealth = 100;
+		//Hud->ShowLostScreen();
+		AMainPlayerController* PlayerController = Cast<AMainPlayerController>(GetController());
+		PlayerController->ShowRestartButtonOnHud();
+
+		UE_LOG(LogTemp, Warning, TEXT("Lost screen triggered"));
+		
 	}
 
 	if (HealthBarComponent)

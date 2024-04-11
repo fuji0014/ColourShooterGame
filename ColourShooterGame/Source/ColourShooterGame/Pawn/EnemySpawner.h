@@ -37,13 +37,21 @@ public:
 
 	FTimerHandle SpawnTimerHandle;
 
+	class AColourShooterGameStateBase* GameState;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override; 
+	
+	UFUNCTION(BlueprintCallable)
+	void PauseSpawning();
+
+	UFUNCTION(BlueprintCallable)
+	void ResumeSpawning();
 
 private:
 	FVector GetRandomPointInVolume();
