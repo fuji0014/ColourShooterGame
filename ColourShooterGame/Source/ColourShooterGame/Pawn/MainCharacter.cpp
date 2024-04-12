@@ -268,6 +268,7 @@ void AMainCharacter::DecreaseHealth()
 		//Destroy();
 		//CurrentHealth = 100;
 		//Hud->ShowLostScreen();
+		Destroy();
 		AMainPlayerController* PlayerController = Cast<AMainPlayerController>(GetController());
 		PlayerController->ShowRestartButtonOnHud();
 
