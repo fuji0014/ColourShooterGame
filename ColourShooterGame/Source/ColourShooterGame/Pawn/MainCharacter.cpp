@@ -268,12 +268,12 @@ void AMainCharacter::DecreaseHealth()
 		//Destroy();
 		//CurrentHealth = 100;
 		//Hud->ShowLostScreen();
-		Destroy();
+		
 		AMainPlayerController* PlayerController = Cast<AMainPlayerController>(GetController());
 		PlayerController->ShowRestartButtonOnHud();
 
 		UE_LOG(LogTemp, Warning, TEXT("Lost screen triggered"));
-		
+		Destroy();
 	}
 
 	if (HealthBarComponent)

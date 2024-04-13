@@ -34,7 +34,7 @@ void AMainPlayerController::AcknowledgePossession(APawn* P)
 {
 	Super::AcknowledgePossession(P);
 
-	TheMainChar = Cast<AMainCharacter>(P);
+	//TheMainChar = Cast<AMainCharacter>(P);
 
 }
 
@@ -42,6 +42,7 @@ void AMainPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 	//TheMainPawn = Cast<AMainPawn>(aPawn); //NOPE
+	//TheMainChar = Cast<AMainCharacter>(aPawn);
 }
 
 void AMainPlayerController::OnUnPossess()
@@ -57,7 +58,7 @@ void AMainPlayerController::SetupInputComponent()
 	if (InputComponent)
 	{
 		//UI HUD
-		InputComponent->BindAction("ShowRestartButtonOnHUD", IE_Pressed, this, &AMainPlayerController::ShowRestartButtonOnHud);
+		//InputComponent->BindAction("ShowRestartButtonOnHUD", IE_Pressed, this, &AMainPlayerController::ShowRestartButtonOnHud);
 	}
 }
 

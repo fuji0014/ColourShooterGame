@@ -20,7 +20,7 @@ AEnemySpawner::AEnemySpawner()
     // Set default values for spawn delay range and difficulty scalar
     SpawnDelayRangeLow = 5.0f;
     SpawnDelayRangeHigh = 10.0f;
-    DifficultyScalar = 1.0f;
+    DifficultyScalar = 1.05f;
 
     PauseSpawning();
 }
@@ -52,12 +52,12 @@ void AEnemySpawner::SpawnEnemy()
     int32 RandomIndex = FMath::RandBool() ? 1 : 0;
     if (RandomIndex == 0) {
         AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(EnemyRedBlueprint, SpawnLocation, FRotator::ZeroRotator);
-        NewEnemy->EnemyType = EEnemyType::RedEnemy;
+        //NewEnemy->EnemyType = EEnemyType::RedEnemy;
     }
     else 
     {
         AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(EnemyBlueBlueprint, SpawnLocation, FRotator::ZeroRotator);
-        NewEnemy->EnemyType = EEnemyType::BlueEnemy;
+        //NewEnemy->EnemyType = EEnemyType::BlueEnemy;
     }
     
 

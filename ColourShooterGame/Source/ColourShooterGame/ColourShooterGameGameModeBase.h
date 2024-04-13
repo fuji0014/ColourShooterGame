@@ -17,6 +17,11 @@ class COLOURSHOOTERGAME_API AColourShooterGameGameModeBase : public AGameModeBas
 protected:
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly, Category = "MyGameMode")
+	TSubclassOf<class AMainCharacter> DefaultCharacterClass; // The default character class to spawn
+
+	virtual APawn* SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot) override;
+
 public:
 	AColourShooterGameGameModeBase();
 
